@@ -1,18 +1,20 @@
-
 class Solution:
     def lengthOfLongestSubstring(self, s: str) -> int:
-        char_map = {}
-        left = 0
-        max_length = 0
+        data = s.encode()  
+        cap = len(set(data)) if len(data) > 512 else 256
 
-        for right in range(len(s)):
-            if s[right] in char_map:
-                left = max(left, char_map[s[right]] + 1)
+        last = [0] * 256
 
-            char_map[s[right]] = right
+        best = left = right = 0
+        for b in data:
+            right += 1
+            prev = last[b]
+            if prev > left:
+                left = prev
+            elif right - left > best:
+                best = right - left
+                if best == cap:
+                    break  
+            last[b] = right
 
-            max_length = max(max_length, right - left + 1)
-
-        return max_length
-
-        
+        return best
