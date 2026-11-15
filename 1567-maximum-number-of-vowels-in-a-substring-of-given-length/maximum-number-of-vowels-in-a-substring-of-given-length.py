@@ -1,22 +1,24 @@
 class Solution:
     def maxVowels(self, s: str, k: int) -> int:
-        vowels = "aeiou"
+        count = best = sum(s.count(v, 0, k) for v in "aeiou")
 
-        count = 0
+        if best == k or k == len(s):
+            return best
 
-        for i in range(k):
-            if s[i] in vowels:
-                count += 1
+        
+        table = bytes(1 if c in b"aeiou" else 0 for c in range(256))
+        flags = s.encode().translate(table)
 
-        max_count = count
-
-        for i in range(k, len(s)):
-            if s[i] in vowels:
-                count += 1
-
-            if s[i - k] in vowels:
+        for outgoing, incoming in zip(flags, flags[k:]):
+            if incoming:
+                if not outgoing:
+                    # A vowel replaces a consonant: count increases.
+                    count += 1
+                    if count > best:
+                        best = count
+                        if best == k:
+                            return k
+            elif outgoing:
                 count -= 1
 
-            max_count = max(max_count, count)
-
-        return max_count
+        return best
