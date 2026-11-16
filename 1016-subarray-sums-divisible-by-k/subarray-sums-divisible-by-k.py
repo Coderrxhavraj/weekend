@@ -1,21 +1,12 @@
-
 class Solution:
-    def subarraysDivByK(self, nums: List[int], k: int) -> int:
-        remainder_count = {0: 1}
-
-        prefix_sum = 0
-        count = 0
-
+    def subarraysDivByK(self, nums: list[int], k: int) -> int:
+        n = len(nums)
+        cnt = [0] * k
+        cnt[0] = 1
+        rem = 0
+        res = 0
         for num in nums:
-            prefix_sum += num
-
-            remainder = prefix_sum % k
-
-            if remainder in remainder_count:
-                count += remainder_count[remainder]
-
-            remainder_count[remainder] = (
-                remainder_count.get(remainder, 0) + 1
-            )
-
-        return count
+            rem = (rem + num) % k
+            res += cnt[rem]
+            cnt[rem] += 1
+        return res
